@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d4f338d052d14140967b867b543d699d" Name="Diagram1">
+        <EntityTypeShape EntityType="BluequizModel.bq_Part" Width="1.5" PointX="3" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.bq_Question" Width="1.5" PointX="7.5" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.bq_QuestionGroup" Width="1.5" PointX="5.25" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.bq_Quiz" Width="1.5" PointX="0.75" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.bq_Test" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.qb_Answer" Width="1.5" PointX="9.75" PointY="3.875" IsExpanded="true" />
+        <AssociationConnector Association="BluequizModel.FK_bq_Part_bq_Quiz" ManuallyRouted="false" />
+        <AssociationConnector Association="BluequizModel.FK_bq_QuestionGroup_bq_Part" ManuallyRouted="false" />
+        <AssociationConnector Association="BluequizModel.FK_bq_Question_bq_QuestionGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="BluequizModel.FK_bq_Question_bq_Quiz" ManuallyRouted="false" />
+        <AssociationConnector Association="BluequizModel.FK_qb_Answer_bq_Question" ManuallyRouted="false" />
+        <AssociationConnector Association="BluequizModel.FK_bq_QuestionGroup_bq_Quiz" ManuallyRouted="false" />
+        <AssociationConnector Association="BluequizModel.FK_bq_Test_bq_Quiz" ManuallyRouted="false" />
+        <AssociationConnector Association="BluequizModel.FK_qb_Answer_bq_Test" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
