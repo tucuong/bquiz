@@ -21,6 +21,27 @@ namespace Bquiz.Controllers
             return View();
         }
 
+        public ActionResult UploadAudio(Guid? quizId)
+        {
+            //Trong quá trình thử nghiệm nên anh lấy cái quizId có sẵn luôn cho tiện
+            //Sau này sẽ thay cái này bằng quizId chính thức.
+            if (!quizId.HasValue)
+                quizId = Guid.Parse("55A0C125-226C-454D-B8D9-D70E8E75045E");
+
+            //Tạo Part
+            Guid partId = Guid.NewGuid();
+            db.bq_Part_Add(partId, quizId, "Single Passages", 7);
+
+            //Tạo questionGroup nơi chứa những bộ câu hỏi, và audio file, hình ảnh...
+            Guid questionGroupId = Guid.NewGuid();
+            db.bq_QuestionGroup_Add(questionGroupId, quizId, partId, "Part7.153-155", 1, null, null);
+
+            ViewBag.QuestionGroupId = questionGroupId;
+            return View();
+        }
+
+
+        //file's limit : 10MB
         public ActionResult UploadQuestionGroupAudio(IEnumerable<HttpPostedFileBase> attachments, Guid questionGroupId)
         {
             // The Name of the Upload component is "attachments" 

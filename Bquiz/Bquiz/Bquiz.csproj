@@ -288,6 +288,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PartController.cs" />
+    <Compile Include="Controllers\QuestionGroupController.cs" />
+    <Compile Include="Controllers\QuizController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -310,10 +313,22 @@
     <Compile Include="Models\bq_Part.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\bq_Part_GetByQuizId_Result.cs">
+      <DependentUpon>Bquiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\bq_Question.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\bq_QuestionGroup.cs">
+      <DependentUpon>Bquiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bq_QuestionGroup_GetByPart_Result.cs">
+      <DependentUpon>Bquiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bq_Question_GetByQuestionGroupId_Result.cs">
+      <DependentUpon>Bquiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bq_Question_GetByQuizId_Result.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\bq_Quiz.cs">
@@ -675,9 +690,14 @@
     <Content Include="Views\Shared\EditorTemplates\Integer.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Number.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Time.cshtml" />
+    <Content Include="Views\File\UploadAudio.cshtml" />
+    <Content Include="Views\Quiz\Index.cshtml" />
+    <Content Include="Views\Part\Index.cshtml" />
+    <Content Include="Views\QuestionGroup\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Audio\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Bquiz.Models.bq_Quiz>
+
+@{
+    ViewBag.Title = "Danh sách quiz";
+}
+
+<h2>Danh sách quiz</h2>
+
+<table>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            QuizId
+        </th>
+        <th>
+            UserId
+        </th>
+        <th>
+            DateCreated
+        </th>
+        <th>
+            FinanceCompany
+        </th>
+        <th>
+            CompanyIcon
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            <a href="/Part?quizId=@item.QuizId"><b>@item.Name</b></a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QuizId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserId)
+        </td>
+        
+        <td>
+            @Html.DisplayFor(modelItem => item.DateCreated)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FinanceCompany)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyIcon)
+        </td>
+    </tr>
+}
+
+</table>

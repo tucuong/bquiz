@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "UploadAudio";
+}
+
+<h2>UploadAudio</h2>
+
+@(Html.Telerik().Upload()
+    .Name("attachments")
+    .Multiple(false)
+    .Async(async => async
+        .Save("UploadQuestionGroupAudio", "File", new {questionGroupId = ViewBag.QuestionGroupId })
+    )
+)

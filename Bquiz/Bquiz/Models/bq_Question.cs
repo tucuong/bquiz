@@ -22,6 +22,7 @@ namespace Bquiz.Models
         public System.Guid QuestionId { get; set; }
         public System.Guid QuestionGroupId { get; set; }
         public System.Guid QuizId { get; set; }
+        public byte Order { get; set; }
         public string ImagePath { get; set; }
         public string MediaPath { get; set; }
         public string Paragraph { get; set; }

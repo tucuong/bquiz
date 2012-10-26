@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Bquiz.Models.bq_Part>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<table>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            PartId
+        </th>
+        <th>
+            QuizId
+        </th>
+        
+        <th>
+            Order
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            <a href="/QuestionGroup?partId=@item.PartId"><b>Part : @item.Name</b></a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PartId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QuizId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Order)
+        </td>
+    </tr>
+}
+
+</table>

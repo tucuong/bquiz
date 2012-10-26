@@ -16,6 +16,7 @@ namespace Bquiz.Models
     {
         public bq_Quiz()
         {
+            this.bq_Part = new HashSet<bq_Part>();
             this.bq_Question = new HashSet<bq_Question>();
             this.bq_QuestionGroup = new HashSet<bq_QuestionGroup>();
             this.bq_Test = new HashSet<bq_Test>();
@@ -28,7 +29,7 @@ namespace Bquiz.Models
         public string FinanceCompany { get; set; }
         public string CompanyIcon { get; set; }
     
-        public virtual bq_Part bq_Part { get; set; }
+        public virtual ICollection<bq_Part> bq_Part { get; set; }
         public virtual ICollection<bq_Question> bq_Question { get; set; }
         public virtual ICollection<bq_QuestionGroup> bq_QuestionGroup { get; set; }
         public virtual ICollection<bq_Test> bq_Test { get; set; }

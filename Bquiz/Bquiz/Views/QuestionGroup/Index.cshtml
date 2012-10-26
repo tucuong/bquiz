@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Bquiz.Models.bq_QuestionGroup>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<table>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            QuestionGroupId
+        </th>
+        
+        <th>
+            Order
+        </th>
+        <th>
+            Paragraph
+        </th>
+        <th>
+            MediaPath
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            <b>@item.Name</b>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QuestionGroupId)
+        </td>
+        
+        <td>
+            @Html.DisplayFor(modelItem => item.Order)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Paragraph)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MediaPath)
+        </td>
+    </tr>
+}
+
+</table>
