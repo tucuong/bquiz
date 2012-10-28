@@ -4,13 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="ff2c196f19cc4ff0829ea6e3e0af56da" Name="Diagram">
-        <EntityTypeShape EntityType="BluequizModel.bq_Part" Width="1.5" PointX="3.125" PointY="1.25" IsExpanded="false" />
-        <EntityTypeShape EntityType="BluequizModel.bq_Question" Width="1.5" PointX="3.125" PointY="3.5" IsExpanded="false" />
-        <EntityTypeShape EntityType="BluequizModel.bq_QuestionGroup" Width="1.5" PointX="3.125" PointY="2.375" IsExpanded="false" />
-        <EntityTypeShape EntityType="BluequizModel.bq_Quiz" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="false" />
-        <EntityTypeShape EntityType="BluequizModel.bq_Test" Width="1.5" PointX="0.75" PointY="5" IsExpanded="false" />
-        <EntityTypeShape EntityType="BluequizModel.qb_Answer" Width="1.5" PointX="3.125" PointY="5" IsExpanded="false" />
+      <Diagram DiagramId="1306f93660184336aa3c5d0076c5f5c6" Name="Diagram1">
+        <EntityTypeShape EntityType="BluequizModel.bq_Part" Width="1.5" PointX="3" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.bq_Question" Width="1.5" PointX="7.5" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.bq_QuestionGroup" Width="1.5" PointX="5.25" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.bq_Quiz" Width="1.5" PointX="0.75" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.bq_Test" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="BluequizModel.qb_Answer" Width="1.5" PointX="9.75" PointY="4" IsExpanded="true" />
         <AssociationConnector Association="BluequizModel.FK_bq_Part_bq_Quiz" ManuallyRouted="false" />
         <AssociationConnector Association="BluequizModel.FK_bq_QuestionGroup_bq_Part" ManuallyRouted="false" />
         <AssociationConnector Association="BluequizModel.FK_bq_Question_bq_QuestionGroup" ManuallyRouted="false" />

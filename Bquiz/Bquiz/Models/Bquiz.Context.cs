@@ -56,13 +56,13 @@ namespace Bquiz.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Part_Add", partIdParameter, quizIdParameter, nameParameter, orderParameter);
         }
     
-        public virtual ObjectResult<bq_Part> bq_Part_GetByQuizId(Nullable<System.Guid> quizId)
+        public virtual ObjectResult<bq_Part_GetByQuizId_Result> bq_Part_GetByQuizId(Nullable<System.Guid> quizId)
         {
             var quizIdParameter = quizId.HasValue ?
                 new ObjectParameter("quizId", quizId) :
                 new ObjectParameter("quizId", typeof(System.Guid));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Part>("bq_Part_GetByQuizId", quizIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Part_GetByQuizId_Result>("bq_Part_GetByQuizId", quizIdParameter);
         }
     
         public virtual int bq_Part_Update(Nullable<System.Guid> partId, string name, Nullable<byte> order)
@@ -135,22 +135,22 @@ namespace Bquiz.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Question_Add", questionIdParameter, questionGroupIdParameter, quizIdParameter, orderParameter, imagePathParameter, mediaPathParameter, paragraphParameter, optionAParameter, optionBParameter, optionCParameter, optionDParameter, answerParameter);
         }
     
-        public virtual ObjectResult<bq_Question> bq_Question_GetByQuestionGroupId(Nullable<System.Guid> questionGroupId)
+        public virtual ObjectResult<bq_Question_GetByQuestionGroupId_Result> bq_Question_GetByQuestionGroupId(Nullable<System.Guid> questionGroupId)
         {
             var questionGroupIdParameter = questionGroupId.HasValue ?
                 new ObjectParameter("questionGroupId", questionGroupId) :
                 new ObjectParameter("questionGroupId", typeof(System.Guid));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question>("bq_Question_GetByQuestionGroupId", questionGroupIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question_GetByQuestionGroupId_Result>("bq_Question_GetByQuestionGroupId", questionGroupIdParameter);
         }
     
-        public virtual ObjectResult<bq_Question> bq_Question_GetByQuizId(Nullable<System.Guid> quizId)
+        public virtual ObjectResult<bq_Question_GetByQuizId_Result> bq_Question_GetByQuizId(Nullable<System.Guid> quizId)
         {
             var quizIdParameter = quizId.HasValue ?
                 new ObjectParameter("quizId", quizId) :
                 new ObjectParameter("quizId", typeof(System.Guid));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question>("bq_Question_GetByQuizId", quizIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question_GetByQuizId_Result>("bq_Question_GetByQuizId", quizIdParameter);
         }
     
         public virtual int bq_Question_Update(Nullable<System.Guid> questionId, Nullable<byte> order, string imagePath, string mediaPath, string paragraph, string optionA, string optionB, string optionC, string optionD, Nullable<byte> answer)
@@ -231,13 +231,13 @@ namespace Bquiz.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_QuestionGroup_Add", questionGroupIdParameter, quizIdParameter, partIdParameter, nameParameter, orderParameter, paragraphParameter, mediaPathParameter);
         }
     
-        public virtual ObjectResult<bq_QuestionGroup> bq_QuestionGroup_GetByPart(Nullable<System.Guid> partId)
+        public virtual ObjectResult<bq_QuestionGroup_GetByPart_Result> bq_QuestionGroup_GetByPart(Nullable<System.Guid> partId)
         {
             var partIdParameter = partId.HasValue ?
                 new ObjectParameter("partId", partId) :
                 new ObjectParameter("partId", typeof(System.Guid));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_QuestionGroup>("bq_QuestionGroup_GetByPart", partIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_QuestionGroup_GetByPart_Result>("bq_QuestionGroup_GetByPart", partIdParameter);
         }
     
         public virtual int bq_QuestionGroup_Update(Nullable<System.Guid> questionGroupId, string name, Nullable<byte> order, string paragraph, string mediaPath)

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="BluequizModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+      <Schema Namespace="BluequizModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="BluequizModelStoreContainer">
           <EntitySet Name="bq_Part" EntityType="BluequizModel.Store.bq_Part" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="bq_Question" EntityType="BluequizModel.Store.bq_Question" store:Type="Tables" Schema="dbo" />
@@ -281,7 +281,8 @@
           <Parameter Name="questionGroupId" Type="uniqueidentifier" Mode="In" />
           <Parameter Name="mediaPath" Type="varchar" Mode="In" />
         </Function>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="BluequizModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
@@ -331,7 +332,7 @@
             <Parameter Name="order" Mode="In" Type="Byte" />
           </FunctionImport>
           <FunctionImport Name="bq_Part_GetByQuizId" EntitySet="bq_Part" ReturnType="Collection(BluequizModel.bq_Part)">
-          <Parameter Name="quizId" Mode="In" Type="Guid" />
+            <Parameter Name="quizId" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="bq_Part_Update">
             <Parameter Name="partId" Mode="In" Type="Guid" />
@@ -353,10 +354,10 @@
             <Parameter Name="answer" Mode="In" Type="Byte" />
           </FunctionImport>
           <FunctionImport Name="bq_Question_GetByQuestionGroupId" EntitySet="bq_Question" ReturnType="Collection(BluequizModel.bq_Question)">
-          <Parameter Name="questionGroupId" Mode="In" Type="Guid" />
+            <Parameter Name="questionGroupId" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="bq_Question_GetByQuizId" EntitySet="bq_Question" ReturnType="Collection(BluequizModel.bq_Question)">
-          <Parameter Name="quizId" Mode="In" Type="Guid" />
+            <Parameter Name="quizId" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="bq_Question_Update">
             <Parameter Name="questionId" Mode="In" Type="Guid" />
@@ -380,7 +381,7 @@
             <Parameter Name="mediaPath" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="bq_QuestionGroup_GetByPart" EntitySet="bq_QuestionGroup" ReturnType="Collection(BluequizModel.bq_QuestionGroup)">
-          <Parameter Name="partId" Mode="In" Type="Guid" />
+            <Parameter Name="partId" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="bq_QuestionGroup_Update">
             <Parameter Name="questionGroupId" Mode="In" Type="Guid" />
