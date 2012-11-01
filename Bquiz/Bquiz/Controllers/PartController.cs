@@ -16,7 +16,20 @@ namespace Bquiz.Controllers
 
         public ActionResult Index(Guid quizId)
         {
-            var parts = db.bq_Part_GetByQuizId(quizId).ToList();
+            var parts = db.bq_Part_GetByParentId(0).ToList();
+
+            ViewBag.QuizId = quizId;
+            return View(parts);
+        }
+
+        public ActionResult EdittingMenu(Guid? quizId)
+        {
+            if (!quizId.HasValue)
+                quizId = Guid.Parse("55A0C125-226C-454D-B8D9-D70E8E75045E");
+
+            var parts = db.bq_Part_GetAllChilds().ToList();
+            ViewBag.QuizId = quizId;
+
             return View(parts);
         }
 

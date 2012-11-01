@@ -6,38 +6,32 @@
 
 <h2>Index</h2>
 
-<table>
-    <tr>
-        <th>
-            Name
-        </th>
-        <th>
-            PartId
-        </th>
-        <th>
-            QuizId
-        </th>
-        
-        <th>
-            Order
-        </th>
-    </tr>
-
 @foreach (var item in Model) {
-    <tr>
-        <td>
-            <a href="/QuestionGroup?partId=@item.PartId"><b>Part : @item.Name</b></a>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PartId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QuizId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Order)
-        </td>
-    </tr>
-}
+    <h3><b>Part @item.Order : @item.Name</b> (@item.NumberOfItems items)</h3>
+    
+    using (Bquiz.Models.BluequizEntities db=new Bquiz.Models.BluequizEntities())
+    {
+        <table>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Items
+                </th>
+            </tr>
+            @foreach(var part in db.bq_Part_GetByParentId(item.PartId).ToList())
+            {
+                <tr>
+                    <td>
+                        <a href="/QuestionGroup?partId=@part.PartId&quizId=@ViewBag.QuizId"><b>Part @part.Order : @part.Name</b></a>
 
-</table>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => part.NumberOfItems)
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+}

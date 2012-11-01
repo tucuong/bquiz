@@ -14,9 +14,12 @@ namespace Bquiz.Controllers
         //
         // GET: /QuestionGroup/
 
-        public ActionResult Index(Guid partId)
+        public ActionResult Index(Guid quizId, byte partId)
         {
-            var questionGroups = db.bq_QuestionGroup_GetByPart(partId).ToList();
+            var part = db.bq_Part_GetById(partId).Single();
+            var questionGroups = db.bq_QuestionGroup_GetByQuiz(quizId, partId).ToList();
+
+            ViewBag.Part = part;
             return View(questionGroups);
         }
 

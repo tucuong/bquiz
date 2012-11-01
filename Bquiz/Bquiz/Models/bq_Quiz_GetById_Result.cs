@@ -11,14 +11,13 @@ namespace Bquiz.Models
 {
     using System;
     
-    public partial class bq_QuestionGroup_GetByPart_Result
+    public partial class bq_Quiz_GetById_Result
     {
-        public System.Guid QuestionGroupId { get; set; }
         public System.Guid QuizId { get; set; }
-        public System.Guid PartId { get; set; }
+        public Nullable<System.Guid> UserId { get; set; }
         public string Name { get; set; }
-        public byte Order { get; set; }
-        public string Paragraph { get; set; }
-        public string MediaPath { get; set; }
+        public System.DateTime DateCreated { get; set; }
+        public string FinanceCompany { get; set; }
+        public string CompanyIcon { get; set; }
     }
 }

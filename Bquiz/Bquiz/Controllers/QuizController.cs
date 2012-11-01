@@ -16,8 +16,8 @@ namespace Bquiz.Controllers
 
         public ActionResult Index()
         {
-            var quizs = db.bq_Quiz.ToList();
-            return View(quizs);
+            var quiz = db.bq_Quiz.ToList();
+            return View(quiz);
         }
 
     }

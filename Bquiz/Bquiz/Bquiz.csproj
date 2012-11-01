@@ -286,6 +286,10 @@
       <DependentUpon>UploadLocalization.zh-CN.resx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Bq_AnController.cs" />
+    <Compile Include="Controllers\Bq_HauController.cs" />
+    <Compile Include="Controllers\Bq_TienController.cs" />
+    <Compile Include="Controllers\Bq_TuCuongController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PartController.cs" />
@@ -313,7 +317,13 @@
     <Compile Include="Models\bq_Part.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\bq_Part_GetByQuizId_Result.cs">
+    <Compile Include="Models\bq_Part_GetAllChilds_Result.cs">
+      <DependentUpon>Bquiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bq_Part_GetById_Result.cs">
+      <DependentUpon>Bquiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bq_Part_GetByParentId_Result.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\bq_Question.cs">
@@ -322,7 +332,13 @@
     <Compile Include="Models\bq_QuestionGroup.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\bq_QuestionGroup_GetByPart_Result.cs">
+    <Compile Include="Models\bq_QuestionGroup_GetById_Result.cs">
+      <DependentUpon>Bquiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bq_QuestionGroup_GetByQuiz_Result.cs">
+      <DependentUpon>Bquiz.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\bq_Question_GetById_Result.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\bq_Question_GetByQuestionGroupId_Result.cs">
@@ -334,9 +350,13 @@
     <Compile Include="Models\bq_Quiz.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\bq_Quiz_GetById_Result.cs">
+      <DependentUpon>Bquiz.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\bq_Test.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Bq_TuCuongModels.cs" />
     <Compile Include="Models\qb_Answer.cs">
       <DependentUpon>Bquiz.tt</DependentUpon>
     </Compile>
@@ -543,6 +563,8 @@
     <Content Include="Content\2012.3.1018\Windows7\slider-v.gif" />
     <Content Include="Content\2012.3.1018\Windows7\sprite-vertical.png" />
     <Content Include="Content\2012.3.1018\Windows7\sprite.png" />
+    <Content Include="Content\images\Statue Of Liberty.png" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -661,7 +683,6 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Content\Site.css" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -681,7 +702,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LogOnPartial.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_Layout1.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Shared\EditorTemplates\Currency.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
@@ -694,9 +715,13 @@
     <Content Include="Views\Quiz\Index.cshtml" />
     <Content Include="Views\Part\Index.cshtml" />
     <Content Include="Views\QuestionGroup\Index.cshtml" />
+    <Content Include="Views\Bq_TuCuong\UpdatePart8.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Part\EdittingMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\Audio\" />
+    <Folder Include="App_Data\Images\" />
     <Folder Include="Content\Audio\" />
   </ItemGroup>
   <ItemGroup>

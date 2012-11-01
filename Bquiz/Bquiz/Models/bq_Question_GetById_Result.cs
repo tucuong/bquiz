@@ -11,11 +11,19 @@ namespace Bquiz.Models
 {
     using System;
     
-    public partial class bq_Part_GetByQuizId_Result
+    public partial class bq_Question_GetById_Result
     {
-        public System.Guid PartId { get; set; }
+        public System.Guid QuestionId { get; set; }
+        public System.Guid QuestionGroupId { get; set; }
         public System.Guid QuizId { get; set; }
-        public string Name { get; set; }
         public byte Order { get; set; }
+        public string ImagePath { get; set; }
+        public string MediaPath { get; set; }
+        public string Paragraph { get; set; }
+        public string OptionA { get; set; }
+        public string OptionB { get; set; }
+        public string OptionC { get; set; }
+        public string OptionD { get; set; }
+        public byte Answer { get; set; }
     }
 }

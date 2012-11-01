@@ -10,16 +10,9 @@
 namespace Bquiz.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class bq_Part
+    public partial class bq_Part_GetAllChilds_Result
     {
-        public bq_Part()
-        {
-            this.bq_Part1 = new HashSet<bq_Part>();
-            this.bq_QuestionGroup = new HashSet<bq_QuestionGroup>();
-        }
-    
         public byte PartId { get; set; }
         public Nullable<byte> ParentId { get; set; }
         public string Name { get; set; }
@@ -27,9 +20,5 @@ namespace Bquiz.Models
         public byte NumberOfItems { get; set; }
         public string EdittingUrl { get; set; }
         public string PublishingUrl { get; set; }
-    
-        public virtual ICollection<bq_Part> bq_Part1 { get; set; }
-        public virtual bq_Part bq_Part2 { get; set; }
-        public virtual ICollection<bq_QuestionGroup> bq_QuestionGroup { get; set; }
     }
 }

@@ -31,6 +31,7 @@ namespace Bquiz.Models
         public string OptionC { get; set; }
         public string OptionD { get; set; }
         public byte Answer { get; set; }
+        public bool IsDone { get; set; }
     
         public virtual bq_QuestionGroup bq_QuestionGroup { get; set; }
         public virtual bq_Quiz bq_Quiz { get; set; }

@@ -10,15 +10,9 @@
 namespace Bquiz.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class bq_QuestionGroup
+    public partial class bq_QuestionGroup_GetByQuiz_Result
     {
-        public bq_QuestionGroup()
-        {
-            this.bq_Question = new HashSet<bq_Question>();
-        }
-    
         public System.Guid QuestionGroupId { get; set; }
         public System.Guid QuizId { get; set; }
         public byte PartId { get; set; }
@@ -26,10 +20,5 @@ namespace Bquiz.Models
         public byte Order { get; set; }
         public string Paragraph { get; set; }
         public string MediaPath { get; set; }
-        public bool IsDone { get; set; }
-    
-        public virtual bq_Part bq_Part { get; set; }
-        public virtual ICollection<bq_Question> bq_Question { get; set; }
-        public virtual bq_Quiz bq_Quiz { get; set; }
     }
 }

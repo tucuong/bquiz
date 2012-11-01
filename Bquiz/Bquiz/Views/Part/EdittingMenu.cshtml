@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Bquiz.Models.bq_Part>
+
+@{
+    Layout = null;
+}
+
+@(
+    Html.Telerik().TreeView()
+        .Name("TreeView")
+        .Items(items =>
+        {
+            foreach (var part in Model)
+            {
+                items.Add().Text(String.Format("Part {0} : {1}", part.Order, part.Name))
+                    .Items(group =>
+                    {
+                        using (Bquiz.Models.BluequizEntities db = new Bquiz.Models.BluequizEntities())
+                        {
+                            foreach (var gr in db.bq_QuestionGroup_GetByQuiz((Guid)ViewBag.QuizId, part.PartId).ToList())
+                            {
+                                group.Add().Text(String.Format("Part {0} : {1}", gr.Order, gr.Name))
+                                    .Url(String.Format("{0}?groupId={1}", part.EdittingUrl, gr.QuestionGroupId));
+                            }
+                        }
+                    });
+            }
+        })
+)

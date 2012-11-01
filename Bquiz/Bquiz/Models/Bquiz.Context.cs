@@ -35,51 +35,22 @@ namespace Bquiz.Models
         public DbSet<bq_Test> bq_Test { get; set; }
         public DbSet<qb_Answer> qb_Answer { get; set; }
     
-        public virtual int bq_Part_Add(Nullable<System.Guid> partId, Nullable<System.Guid> quizId, string name, Nullable<byte> order)
+        public virtual ObjectResult<bq_Part> bq_Part_GetByParentId(Nullable<byte> parentId)
         {
-            var partIdParameter = partId.HasValue ?
-                new ObjectParameter("partId", partId) :
-                new ObjectParameter("partId", typeof(System.Guid));
+            var parentIdParameter = parentId.HasValue ?
+                new ObjectParameter("parentId", parentId) :
+                new ObjectParameter("parentId", typeof(byte));
     
-            var quizIdParameter = quizId.HasValue ?
-                new ObjectParameter("quizId", quizId) :
-                new ObjectParameter("quizId", typeof(System.Guid));
-    
-            var nameParameter = name != null ?
-                new ObjectParameter("name", name) :
-                new ObjectParameter("name", typeof(string));
-    
-            var orderParameter = order.HasValue ?
-                new ObjectParameter("order", order) :
-                new ObjectParameter("order", typeof(byte));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Part_Add", partIdParameter, quizIdParameter, nameParameter, orderParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Part>("bq_Part_GetByParentId", parentIdParameter);
         }
     
-        public virtual ObjectResult<bq_Part_GetByQuizId_Result> bq_Part_GetByQuizId(Nullable<System.Guid> quizId)
+        public virtual ObjectResult<bq_Part> bq_Part_GetByParentId(Nullable<byte> parentId, MergeOption mergeOption)
         {
-            var quizIdParameter = quizId.HasValue ?
-                new ObjectParameter("quizId", quizId) :
-                new ObjectParameter("quizId", typeof(System.Guid));
+            var parentIdParameter = parentId.HasValue ?
+                new ObjectParameter("parentId", parentId) :
+                new ObjectParameter("parentId", typeof(byte));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Part_GetByQuizId_Result>("bq_Part_GetByQuizId", quizIdParameter);
-        }
-    
-        public virtual int bq_Part_Update(Nullable<System.Guid> partId, string name, Nullable<byte> order)
-        {
-            var partIdParameter = partId.HasValue ?
-                new ObjectParameter("partId", partId) :
-                new ObjectParameter("partId", typeof(System.Guid));
-    
-            var nameParameter = name != null ?
-                new ObjectParameter("name", name) :
-                new ObjectParameter("name", typeof(string));
-    
-            var orderParameter = order.HasValue ?
-                new ObjectParameter("order", order) :
-                new ObjectParameter("order", typeof(byte));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Part_Update", partIdParameter, nameParameter, orderParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Part>("bq_Part_GetByParentId", mergeOption, parentIdParameter);
         }
     
         public virtual int bq_Question_Add(Nullable<System.Guid> questionId, Nullable<System.Guid> questionGroupId, Nullable<System.Guid> quizId, Nullable<byte> order, string imagePath, string mediaPath, string paragraph, string optionA, string optionB, string optionC, string optionD, Nullable<byte> answer)
@@ -135,22 +106,40 @@ namespace Bquiz.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Question_Add", questionIdParameter, questionGroupIdParameter, quizIdParameter, orderParameter, imagePathParameter, mediaPathParameter, paragraphParameter, optionAParameter, optionBParameter, optionCParameter, optionDParameter, answerParameter);
         }
     
-        public virtual ObjectResult<bq_Question_GetByQuestionGroupId_Result> bq_Question_GetByQuestionGroupId(Nullable<System.Guid> questionGroupId)
+        public virtual ObjectResult<bq_Question> bq_Question_GetByQuestionGroupId(Nullable<System.Guid> questionGroupId)
         {
             var questionGroupIdParameter = questionGroupId.HasValue ?
                 new ObjectParameter("questionGroupId", questionGroupId) :
                 new ObjectParameter("questionGroupId", typeof(System.Guid));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question_GetByQuestionGroupId_Result>("bq_Question_GetByQuestionGroupId", questionGroupIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question>("bq_Question_GetByQuestionGroupId", questionGroupIdParameter);
         }
     
-        public virtual ObjectResult<bq_Question_GetByQuizId_Result> bq_Question_GetByQuizId(Nullable<System.Guid> quizId)
+        public virtual ObjectResult<bq_Question> bq_Question_GetByQuestionGroupId(Nullable<System.Guid> questionGroupId, MergeOption mergeOption)
+        {
+            var questionGroupIdParameter = questionGroupId.HasValue ?
+                new ObjectParameter("questionGroupId", questionGroupId) :
+                new ObjectParameter("questionGroupId", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question>("bq_Question_GetByQuestionGroupId", mergeOption, questionGroupIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_Question> bq_Question_GetByQuizId(Nullable<System.Guid> quizId)
         {
             var quizIdParameter = quizId.HasValue ?
                 new ObjectParameter("quizId", quizId) :
                 new ObjectParameter("quizId", typeof(System.Guid));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question_GetByQuizId_Result>("bq_Question_GetByQuizId", quizIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question>("bq_Question_GetByQuizId", quizIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_Question> bq_Question_GetByQuizId(Nullable<System.Guid> quizId, MergeOption mergeOption)
+        {
+            var quizIdParameter = quizId.HasValue ?
+                new ObjectParameter("quizId", quizId) :
+                new ObjectParameter("quizId", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question>("bq_Question_GetByQuizId", mergeOption, quizIdParameter);
         }
     
         public virtual int bq_Question_Update(Nullable<System.Guid> questionId, Nullable<byte> order, string imagePath, string mediaPath, string paragraph, string optionA, string optionB, string optionC, string optionD, Nullable<byte> answer)
@@ -198,7 +187,33 @@ namespace Bquiz.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Question_Update", questionIdParameter, orderParameter, imagePathParameter, mediaPathParameter, paragraphParameter, optionAParameter, optionBParameter, optionCParameter, optionDParameter, answerParameter);
         }
     
-        public virtual int bq_QuestionGroup_Add(Nullable<System.Guid> questionGroupId, Nullable<System.Guid> quizId, Nullable<System.Guid> partId, string name, Nullable<byte> order, string paragraph, string mediaPath)
+        public virtual int bq_Question_UpdateImagePath(Nullable<System.Guid> questionId, string imagePath)
+        {
+            var questionIdParameter = questionId.HasValue ?
+                new ObjectParameter("questionId", questionId) :
+                new ObjectParameter("questionId", typeof(System.Guid));
+    
+            var imagePathParameter = imagePath != null ?
+                new ObjectParameter("imagePath", imagePath) :
+                new ObjectParameter("imagePath", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Question_UpdateImagePath", questionIdParameter, imagePathParameter);
+        }
+    
+        public virtual int bq_Question_UpdateMediaPath(Nullable<System.Guid> questionId, string mediaPath)
+        {
+            var questionIdParameter = questionId.HasValue ?
+                new ObjectParameter("questionId", questionId) :
+                new ObjectParameter("questionId", typeof(System.Guid));
+    
+            var mediaPathParameter = mediaPath != null ?
+                new ObjectParameter("mediaPath", mediaPath) :
+                new ObjectParameter("mediaPath", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Question_UpdateMediaPath", questionIdParameter, mediaPathParameter);
+        }
+    
+        public virtual int bq_QuestionGroup_Add(Nullable<System.Guid> questionGroupId, Nullable<System.Guid> quizId, Nullable<byte> partId, string name, Nullable<byte> order, string paragraph, string mediaPath)
         {
             var questionGroupIdParameter = questionGroupId.HasValue ?
                 new ObjectParameter("questionGroupId", questionGroupId) :
@@ -210,7 +225,7 @@ namespace Bquiz.Models
     
             var partIdParameter = partId.HasValue ?
                 new ObjectParameter("partId", partId) :
-                new ObjectParameter("partId", typeof(System.Guid));
+                new ObjectParameter("partId", typeof(byte));
     
             var nameParameter = name != null ?
                 new ObjectParameter("name", name) :
@@ -231,13 +246,30 @@ namespace Bquiz.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_QuestionGroup_Add", questionGroupIdParameter, quizIdParameter, partIdParameter, nameParameter, orderParameter, paragraphParameter, mediaPathParameter);
         }
     
-        public virtual ObjectResult<bq_QuestionGroup_GetByPart_Result> bq_QuestionGroup_GetByPart(Nullable<System.Guid> partId)
+        public virtual ObjectResult<bq_QuestionGroup> bq_QuestionGroup_GetByQuiz(Nullable<System.Guid> quizId, Nullable<byte> partId)
         {
+            var quizIdParameter = quizId.HasValue ?
+                new ObjectParameter("quizId", quizId) :
+                new ObjectParameter("quizId", typeof(System.Guid));
+    
             var partIdParameter = partId.HasValue ?
                 new ObjectParameter("partId", partId) :
-                new ObjectParameter("partId", typeof(System.Guid));
+                new ObjectParameter("partId", typeof(byte));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_QuestionGroup_GetByPart_Result>("bq_QuestionGroup_GetByPart", partIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_QuestionGroup>("bq_QuestionGroup_GetByQuiz", quizIdParameter, partIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_QuestionGroup> bq_QuestionGroup_GetByQuiz(Nullable<System.Guid> quizId, Nullable<byte> partId, MergeOption mergeOption)
+        {
+            var quizIdParameter = quizId.HasValue ?
+                new ObjectParameter("quizId", quizId) :
+                new ObjectParameter("quizId", typeof(System.Guid));
+    
+            var partIdParameter = partId.HasValue ?
+                new ObjectParameter("partId", partId) :
+                new ObjectParameter("partId", typeof(byte));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_QuestionGroup>("bq_QuestionGroup_GetByQuiz", mergeOption, quizIdParameter, partIdParameter);
         }
     
         public virtual int bq_QuestionGroup_Update(Nullable<System.Guid> questionGroupId, string name, Nullable<byte> order, string paragraph, string mediaPath)
@@ -276,6 +308,147 @@ namespace Bquiz.Models
                 new ObjectParameter("mediaPath", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_QuestionGroup_UpdateMediaPath", questionGroupIdParameter, mediaPathParameter);
+        }
+    
+        public virtual int bq_Quiz_Add(Nullable<System.Guid> quizId, Nullable<System.Guid> userId, string name, string financeCompany, string companyIcon)
+        {
+            var quizIdParameter = quizId.HasValue ?
+                new ObjectParameter("quizId", quizId) :
+                new ObjectParameter("quizId", typeof(System.Guid));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("userId", userId) :
+                new ObjectParameter("userId", typeof(System.Guid));
+    
+            var nameParameter = name != null ?
+                new ObjectParameter("name", name) :
+                new ObjectParameter("name", typeof(string));
+    
+            var financeCompanyParameter = financeCompany != null ?
+                new ObjectParameter("financeCompany", financeCompany) :
+                new ObjectParameter("financeCompany", typeof(string));
+    
+            var companyIconParameter = companyIcon != null ?
+                new ObjectParameter("companyIcon", companyIcon) :
+                new ObjectParameter("companyIcon", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Quiz_Add", quizIdParameter, userIdParameter, nameParameter, financeCompanyParameter, companyIconParameter);
+        }
+    
+        public virtual int bq_Quiz_Update(Nullable<System.Guid> quizId, string name, string financeCompany, string companyIcon)
+        {
+            var quizIdParameter = quizId.HasValue ?
+                new ObjectParameter("quizId", quizId) :
+                new ObjectParameter("quizId", typeof(System.Guid));
+    
+            var nameParameter = name != null ?
+                new ObjectParameter("name", name) :
+                new ObjectParameter("name", typeof(string));
+    
+            var financeCompanyParameter = financeCompany != null ?
+                new ObjectParameter("financeCompany", financeCompany) :
+                new ObjectParameter("financeCompany", typeof(string));
+    
+            var companyIconParameter = companyIcon != null ?
+                new ObjectParameter("companyIcon", companyIcon) :
+                new ObjectParameter("companyIcon", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Quiz_Update", quizIdParameter, nameParameter, financeCompanyParameter, companyIconParameter);
+        }
+    
+        public virtual int bq_Quiz_UpdateCompanyIcon(Nullable<System.Guid> quizId, string companyIcon)
+        {
+            var quizIdParameter = quizId.HasValue ?
+                new ObjectParameter("quizId", quizId) :
+                new ObjectParameter("quizId", typeof(System.Guid));
+    
+            var companyIconParameter = companyIcon != null ?
+                new ObjectParameter("companyIcon", companyIcon) :
+                new ObjectParameter("companyIcon", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("bq_Quiz_UpdateCompanyIcon", quizIdParameter, companyIconParameter);
+        }
+    
+        public virtual ObjectResult<bq_Part> bq_Part_GetById(Nullable<byte> partId)
+        {
+            var partIdParameter = partId.HasValue ?
+                new ObjectParameter("partId", partId) :
+                new ObjectParameter("partId", typeof(byte));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Part>("bq_Part_GetById", partIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_Part> bq_Part_GetById(Nullable<byte> partId, MergeOption mergeOption)
+        {
+            var partIdParameter = partId.HasValue ?
+                new ObjectParameter("partId", partId) :
+                new ObjectParameter("partId", typeof(byte));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Part>("bq_Part_GetById", mergeOption, partIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_Question> bq_Question_GetById(Nullable<System.Guid> questionId)
+        {
+            var questionIdParameter = questionId.HasValue ?
+                new ObjectParameter("questionId", questionId) :
+                new ObjectParameter("questionId", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question>("bq_Question_GetById", questionIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_Question> bq_Question_GetById(Nullable<System.Guid> questionId, MergeOption mergeOption)
+        {
+            var questionIdParameter = questionId.HasValue ?
+                new ObjectParameter("questionId", questionId) :
+                new ObjectParameter("questionId", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Question>("bq_Question_GetById", mergeOption, questionIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_QuestionGroup> bq_QuestionGroup_GetById(Nullable<System.Guid> questionGroupId)
+        {
+            var questionGroupIdParameter = questionGroupId.HasValue ?
+                new ObjectParameter("questionGroupId", questionGroupId) :
+                new ObjectParameter("questionGroupId", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_QuestionGroup>("bq_QuestionGroup_GetById", questionGroupIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_QuestionGroup> bq_QuestionGroup_GetById(Nullable<System.Guid> questionGroupId, MergeOption mergeOption)
+        {
+            var questionGroupIdParameter = questionGroupId.HasValue ?
+                new ObjectParameter("questionGroupId", questionGroupId) :
+                new ObjectParameter("questionGroupId", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_QuestionGroup>("bq_QuestionGroup_GetById", mergeOption, questionGroupIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_Quiz> bq_Quiz_GetById(Nullable<System.Guid> quizId)
+        {
+            var quizIdParameter = quizId.HasValue ?
+                new ObjectParameter("quizId", quizId) :
+                new ObjectParameter("quizId", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Quiz>("bq_Quiz_GetById", quizIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_Quiz> bq_Quiz_GetById(Nullable<System.Guid> quizId, MergeOption mergeOption)
+        {
+            var quizIdParameter = quizId.HasValue ?
+                new ObjectParameter("quizId", quizId) :
+                new ObjectParameter("quizId", typeof(System.Guid));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Quiz>("bq_Quiz_GetById", mergeOption, quizIdParameter);
+        }
+    
+        public virtual ObjectResult<bq_Part> bq_Part_GetAllChilds()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Part>("bq_Part_GetAllChilds");
+        }
+    
+        public virtual ObjectResult<bq_Part> bq_Part_GetAllChilds(MergeOption mergeOption)
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<bq_Part>("bq_Part_GetAllChilds", mergeOption);
         }
     }
 }

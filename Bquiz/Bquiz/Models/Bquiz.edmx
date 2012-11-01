@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="BluequizModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+    <Schema Namespace="BluequizModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="BluequizModelStoreContainer">
           <EntitySet Name="bq_Part" EntityType="BluequizModel.Store.bq_Part" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="bq_Question" EntityType="BluequizModel.Store.bq_Question" store:Type="Tables" Schema="dbo" />
@@ -12,9 +12,9 @@
           <EntitySet Name="bq_Quiz" EntityType="BluequizModel.Store.bq_Quiz" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="bq_Test" EntityType="BluequizModel.Store.bq_Test" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="qb_Answer" EntityType="BluequizModel.Store.qb_Answer" store:Type="Tables" Schema="dbo" />
-          <AssociationSet Name="FK_bq_Part_bq_Quiz" Association="BluequizModel.Store.FK_bq_Part_bq_Quiz">
-            <End Role="bq_Quiz" EntitySet="bq_Quiz" />
+          <AssociationSet Name="FK_bq_Part_bq_Part" Association="BluequizModel.Store.FK_bq_Part_bq_Part">
             <End Role="bq_Part" EntitySet="bq_Part" />
+            <End Role="bq_Part1" EntitySet="bq_Part" />
           </AssociationSet>
           <AssociationSet Name="FK_bq_Question_bq_QuestionGroup" Association="BluequizModel.Store.FK_bq_Question_bq_QuestionGroup">
             <End Role="bq_QuestionGroup" EntitySet="bq_QuestionGroup" />
@@ -49,10 +49,13 @@
           <Key>
             <PropertyRef Name="PartId" />
           </Key>
-          <Property Name="PartId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="QuizId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PartId" Type="tinyint" Nullable="false" />
+          <Property Name="ParentId" Type="tinyint" />
           <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="Order" Type="tinyint" Nullable="false" />
+          <Property Name="Order" Type="tinyint" />
+          <Property Name="NumberOfItems" Type="tinyint" Nullable="false" />
+          <Property Name="EdittingUrl" Type="varchar" MaxLength="60" />
+          <Property Name="PublishingUrl" Type="varchar" MaxLength="60" />
         </EntityType>
         <EntityType Name="bq_Question">
           <Key>
@@ -70,6 +73,7 @@
           <Property Name="OptionC" Type="nvarchar" MaxLength="50" />
           <Property Name="OptionD" Type="nvarchar" MaxLength="50" />
           <Property Name="Answer" Type="tinyint" Nullable="false" />
+          <Property Name="IsDone" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="bq_QuestionGroup">
           <Key>
@@ -77,11 +81,12 @@
           </Key>
           <Property Name="QuestionGroupId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="QuizId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="PartId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PartId" Type="tinyint" Nullable="false" />
           <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Order" Type="tinyint" Nullable="false" />
           <Property Name="Paragraph" Type="ntext" />
           <Property Name="MediaPath" Type="varchar" MaxLength="60" />
+          <Property Name="IsDone" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="bq_Quiz">
           <Key>
@@ -116,15 +121,15 @@
           <Property Name="OrderQuestion" Type="tinyint" Nullable="false" />
           <Property Name="Answer" Type="tinyint" Nullable="false" />
         </EntityType>
-        <Association Name="FK_bq_Part_bq_Quiz">
-          <End Role="bq_Quiz" Type="BluequizModel.Store.bq_Quiz" Multiplicity="1" />
-          <End Role="bq_Part" Type="BluequizModel.Store.bq_Part" Multiplicity="*" />
+        <Association Name="FK_bq_Part_bq_Part">
+          <End Role="bq_Part" Type="BluequizModel.Store.bq_Part" Multiplicity="0..1" />
+          <End Role="bq_Part1" Type="BluequizModel.Store.bq_Part" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="bq_Quiz">
-              <PropertyRef Name="QuizId" />
+            <Principal Role="bq_Part">
+              <PropertyRef Name="PartId" />
             </Principal>
-            <Dependent Role="bq_Part">
-              <PropertyRef Name="QuizId" />
+            <Dependent Role="bq_Part1">
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -212,19 +217,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="bq_Part_Add" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="partId" Type="uniqueidentifier" Mode="In" />
-          <Parameter Name="quizId" Type="uniqueidentifier" Mode="In" />
-          <Parameter Name="name" Type="nvarchar" Mode="In" />
-          <Parameter Name="order" Type="tinyint" Mode="In" />
+        <Function Name="bq_Part_GetAllChilds" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="bq_Part_GetById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="partId" Type="tinyint" Mode="In" />
         </Function>
-        <Function Name="bq_Part_GetByQuizId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="quizId" Type="uniqueidentifier" Mode="In" />
-        </Function>
-        <Function Name="bq_Part_Update" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="partId" Type="uniqueidentifier" Mode="In" />
-          <Parameter Name="name" Type="nvarchar" Mode="In" />
-          <Parameter Name="order" Type="tinyint" Mode="In" />
+        <Function Name="bq_Part_GetByParentId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="parentId" Type="tinyint" Mode="In" />
         </Function>
         <Function Name="bq_Question_Add" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="questionId" Type="uniqueidentifier" Mode="In" />
@@ -239,6 +237,9 @@
           <Parameter Name="optionC" Type="nvarchar" Mode="In" />
           <Parameter Name="optionD" Type="nvarchar" Mode="In" />
           <Parameter Name="answer" Type="tinyint" Mode="In" />
+        </Function>
+        <Function Name="bq_Question_GetById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="questionId" Type="uniqueidentifier" Mode="In" />
         </Function>
         <Function Name="bq_Question_GetByQuestionGroupId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="questionGroupId" Type="uniqueidentifier" Mode="In" />
@@ -258,17 +259,29 @@
           <Parameter Name="optionD" Type="nvarchar" Mode="In" />
           <Parameter Name="answer" Type="tinyint" Mode="In" />
         </Function>
+        <Function Name="bq_Question_UpdateImagePath" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="questionId" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="imagePath" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="bq_Question_UpdateMediaPath" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="questionId" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="mediaPath" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="bq_QuestionGroup_Add" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="questionGroupId" Type="uniqueidentifier" Mode="In" />
           <Parameter Name="quizId" Type="uniqueidentifier" Mode="In" />
-          <Parameter Name="partId" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="partId" Type="tinyint" Mode="In" />
           <Parameter Name="name" Type="nvarchar" Mode="In" />
           <Parameter Name="order" Type="tinyint" Mode="In" />
           <Parameter Name="paragraph" Type="ntext" Mode="In" />
           <Parameter Name="mediaPath" Type="varchar" Mode="In" />
         </Function>
-        <Function Name="bq_QuestionGroup_GetByPart" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="partId" Type="uniqueidentifier" Mode="In" />
+        <Function Name="bq_QuestionGroup_GetById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="questionGroupId" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="bq_QuestionGroup_GetByQuiz" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="quizId" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="partId" Type="tinyint" Mode="In" />
         </Function>
         <Function Name="bq_QuestionGroup_Update" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="questionGroupId" Type="uniqueidentifier" Mode="In" />
@@ -281,8 +294,27 @@
           <Parameter Name="questionGroupId" Type="uniqueidentifier" Mode="In" />
           <Parameter Name="mediaPath" Type="varchar" Mode="In" />
         </Function>
-      </Schema>
-    </edmx:StorageModels>
+        <Function Name="bq_Quiz_Add" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="quizId" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="userId" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="financeCompany" Type="nvarchar" Mode="In" />
+          <Parameter Name="companyIcon" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="bq_Quiz_GetById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="quizId" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="bq_Quiz_Update" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="quizId" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="financeCompany" Type="nvarchar" Mode="In" />
+          <Parameter Name="companyIcon" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="bq_Quiz_UpdateCompanyIcon" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="quizId" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="companyIcon" Type="varchar" Mode="In" />
+        </Function>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="BluequizModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
@@ -293,9 +325,9 @@
           <EntitySet Name="bq_Quiz" EntityType="BluequizModel.bq_Quiz" />
           <EntitySet Name="bq_Test" EntityType="BluequizModel.bq_Test" />
           <EntitySet Name="qb_Answer" EntityType="BluequizModel.qb_Answer" />
-          <AssociationSet Name="FK_bq_Part_bq_Quiz" Association="BluequizModel.FK_bq_Part_bq_Quiz">
-            <End Role="bq_Quiz" EntitySet="bq_Quiz" />
+          <AssociationSet Name="FK_bq_Part_bq_Part" Association="BluequizModel.FK_bq_Part_bq_Part">
             <End Role="bq_Part" EntitySet="bq_Part" />
+            <End Role="bq_Part1" EntitySet="bq_Part" />
           </AssociationSet>
           <AssociationSet Name="FK_bq_QuestionGroup_bq_Part" Association="BluequizModel.FK_bq_QuestionGroup_bq_Part">
             <End Role="bq_Part" EntitySet="bq_Part" />
@@ -325,19 +357,8 @@
             <End Role="bq_Test" EntitySet="bq_Test" />
             <End Role="qb_Answer" EntitySet="qb_Answer" />
           </AssociationSet>
-          <FunctionImport Name="bq_Part_Add">
-            <Parameter Name="partId" Mode="In" Type="Guid" />
-            <Parameter Name="quizId" Mode="In" Type="Guid" />
-            <Parameter Name="name" Mode="In" Type="String" />
-            <Parameter Name="order" Mode="In" Type="Byte" />
-          </FunctionImport>
-          <FunctionImport Name="bq_Part_GetByQuizId" EntitySet="bq_Part" ReturnType="Collection(BluequizModel.bq_Part)">
-            <Parameter Name="quizId" Mode="In" Type="Guid" />
-          </FunctionImport>
-          <FunctionImport Name="bq_Part_Update">
-            <Parameter Name="partId" Mode="In" Type="Guid" />
-            <Parameter Name="name" Mode="In" Type="String" />
-            <Parameter Name="order" Mode="In" Type="Byte" />
+          <FunctionImport Name="bq_Part_GetByParentId" EntitySet="bq_Part" ReturnType="Collection(BluequizModel.bq_Part)">
+          <Parameter Name="parentId" Mode="In" Type="Byte" />
           </FunctionImport>
           <FunctionImport Name="bq_Question_Add">
             <Parameter Name="questionId" Mode="In" Type="Guid" />
@@ -354,10 +375,10 @@
             <Parameter Name="answer" Mode="In" Type="Byte" />
           </FunctionImport>
           <FunctionImport Name="bq_Question_GetByQuestionGroupId" EntitySet="bq_Question" ReturnType="Collection(BluequizModel.bq_Question)">
-            <Parameter Name="questionGroupId" Mode="In" Type="Guid" />
+          <Parameter Name="questionGroupId" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="bq_Question_GetByQuizId" EntitySet="bq_Question" ReturnType="Collection(BluequizModel.bq_Question)">
-            <Parameter Name="quizId" Mode="In" Type="Guid" />
+          <Parameter Name="quizId" Mode="In" Type="Guid" />
           </FunctionImport>
           <FunctionImport Name="bq_Question_Update">
             <Parameter Name="questionId" Mode="In" Type="Guid" />
@@ -371,17 +392,26 @@
             <Parameter Name="optionD" Mode="In" Type="String" />
             <Parameter Name="answer" Mode="In" Type="Byte" />
           </FunctionImport>
+          <FunctionImport Name="bq_Question_UpdateImagePath">
+            <Parameter Name="questionId" Mode="In" Type="Guid" />
+            <Parameter Name="imagePath" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="bq_Question_UpdateMediaPath">
+            <Parameter Name="questionId" Mode="In" Type="Guid" />
+            <Parameter Name="mediaPath" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="bq_QuestionGroup_Add">
             <Parameter Name="questionGroupId" Mode="In" Type="Guid" />
             <Parameter Name="quizId" Mode="In" Type="Guid" />
-            <Parameter Name="partId" Mode="In" Type="Guid" />
+            <Parameter Name="partId" Mode="In" Type="Byte" />
             <Parameter Name="name" Mode="In" Type="String" />
             <Parameter Name="order" Mode="In" Type="Byte" />
             <Parameter Name="paragraph" Mode="In" Type="String" />
             <Parameter Name="mediaPath" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="bq_QuestionGroup_GetByPart" EntitySet="bq_QuestionGroup" ReturnType="Collection(BluequizModel.bq_QuestionGroup)">
-            <Parameter Name="partId" Mode="In" Type="Guid" />
+          <FunctionImport Name="bq_QuestionGroup_GetByQuiz" EntitySet="bq_QuestionGroup" ReturnType="Collection(BluequizModel.bq_QuestionGroup)">
+            <Parameter Name="quizId" Mode="In" Type="Guid" />
+            <Parameter Name="partId" Mode="In" Type="Byte" />
           </FunctionImport>
           <FunctionImport Name="bq_QuestionGroup_Update">
             <Parameter Name="questionGroupId" Mode="In" Type="Guid" />
@@ -394,64 +424,99 @@
             <Parameter Name="questionGroupId" Mode="In" Type="Guid" />
             <Parameter Name="mediaPath" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="bq_Quiz_Add">
+            <Parameter Name="quizId" Mode="In" Type="Guid" />
+            <Parameter Name="userId" Mode="In" Type="Guid" />
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="financeCompany" Mode="In" Type="String" />
+            <Parameter Name="companyIcon" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="bq_Quiz_Update">
+            <Parameter Name="quizId" Mode="In" Type="Guid" />
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="financeCompany" Mode="In" Type="String" />
+            <Parameter Name="companyIcon" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="bq_Quiz_UpdateCompanyIcon">
+            <Parameter Name="quizId" Mode="In" Type="Guid" />
+            <Parameter Name="companyIcon" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="bq_Part_GetById" EntitySet="bq_Part" ReturnType="Collection(BluequizModel.bq_Part)">
+          <Parameter Name="partId" Mode="In" Type="Byte" />
+          </FunctionImport>
+          <FunctionImport Name="bq_Question_GetById" EntitySet="bq_Question" ReturnType="Collection(BluequizModel.bq_Question)">
+          <Parameter Name="questionId" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="bq_QuestionGroup_GetById" EntitySet="bq_QuestionGroup" ReturnType="Collection(BluequizModel.bq_QuestionGroup)">
+          <Parameter Name="questionGroupId" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="bq_Quiz_GetById" EntitySet="bq_Quiz" ReturnType="Collection(BluequizModel.bq_Quiz)">
+          <Parameter Name="quizId" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="bq_Part_GetAllChilds" EntitySet="bq_Part" ReturnType="Collection(BluequizModel.bq_Part)" />
         </EntityContainer>
         <EntityType Name="bq_Part">
           <Key>
             <PropertyRef Name="PartId" />
           </Key>
-          <Property Name="PartId" Type="Guid" Nullable="false" />
-          <Property Name="QuizId" Type="Guid" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="Order" Type="Byte" Nullable="false" />
-          <NavigationProperty Name="bq_Quiz" Relationship="BluequizModel.FK_bq_Part_bq_Quiz" FromRole="bq_Part" ToRole="bq_Quiz" />
+          <Property Type="Byte" Name="PartId" Nullable="false" />
+          <Property Type="Byte" Name="ParentId" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Byte" Name="Order" />
+          <Property Type="Byte" Name="NumberOfItems" Nullable="false" />
+          <NavigationProperty Name="bq_Part1" Relationship="BluequizModel.FK_bq_Part_bq_Part" FromRole="bq_Part" ToRole="bq_Part1" />
+          <NavigationProperty Name="bq_Part2" Relationship="BluequizModel.FK_bq_Part_bq_Part" FromRole="bq_Part1" ToRole="bq_Part" />
           <NavigationProperty Name="bq_QuestionGroup" Relationship="BluequizModel.FK_bq_QuestionGroup_bq_Part" FromRole="bq_Part" ToRole="bq_QuestionGroup" />
+          <Property Type="String" Name="EdittingUrl" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="PublishingUrl" MaxLength="60" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="bq_Question">
           <Key>
             <PropertyRef Name="QuestionId" />
           </Key>
-          <Property Name="QuestionId" Type="Guid" Nullable="false" />
-          <Property Name="QuestionGroupId" Type="Guid" Nullable="false" />
-          <Property Name="QuizId" Type="Guid" Nullable="false" />
-          <Property Name="Order" Type="Byte" Nullable="false" />
-          <Property Name="ImagePath" Type="String" MaxLength="60" Unicode="false" FixedLength="false" />
-          <Property Name="MediaPath" Type="String" MaxLength="60" Unicode="false" FixedLength="false" />
-          <Property Name="Paragraph" Type="String" MaxLength="1000" Unicode="true" FixedLength="false" />
-          <Property Name="OptionA" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="OptionB" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="OptionC" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="OptionD" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="Answer" Type="Byte" Nullable="false" />
+          <Property Type="Guid" Name="QuestionId" Nullable="false" />
+          <Property Type="Guid" Name="QuestionGroupId" Nullable="false" />
+          <Property Type="Guid" Name="QuizId" Nullable="false" />
+          <Property Type="Byte" Name="Order" Nullable="false" />
+          <Property Type="String" Name="ImagePath" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="MediaPath" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Paragraph" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="OptionA" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="OptionB" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="OptionC" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="OptionD" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Byte" Name="Answer" Nullable="false" />
           <NavigationProperty Name="bq_QuestionGroup" Relationship="BluequizModel.FK_bq_Question_bq_QuestionGroup" FromRole="bq_Question" ToRole="bq_QuestionGroup" />
           <NavigationProperty Name="bq_Quiz" Relationship="BluequizModel.FK_bq_Question_bq_Quiz" FromRole="bq_Question" ToRole="bq_Quiz" />
           <NavigationProperty Name="qb_Answer" Relationship="BluequizModel.FK_qb_Answer_bq_Question" FromRole="bq_Question" ToRole="qb_Answer" />
+          <Property Type="Boolean" Name="IsDone" Nullable="false" />
         </EntityType>
         <EntityType Name="bq_QuestionGroup">
           <Key>
             <PropertyRef Name="QuestionGroupId" />
           </Key>
-          <Property Name="QuestionGroupId" Type="Guid" Nullable="false" />
-          <Property Name="QuizId" Type="Guid" Nullable="false" />
-          <Property Name="PartId" Type="Guid" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="Order" Type="Byte" Nullable="false" />
-          <Property Name="Paragraph" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="MediaPath" Type="String" MaxLength="60" Unicode="false" FixedLength="false" />
+          <Property Type="Guid" Name="QuestionGroupId" Nullable="false" />
+          <Property Type="Guid" Name="QuizId" Nullable="false" />
+          <Property Type="Byte" Name="PartId" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Byte" Name="Order" Nullable="false" />
+          <Property Type="String" Name="Paragraph" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="MediaPath" MaxLength="60" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="bq_Part" Relationship="BluequizModel.FK_bq_QuestionGroup_bq_Part" FromRole="bq_QuestionGroup" ToRole="bq_Part" />
           <NavigationProperty Name="bq_Question" Relationship="BluequizModel.FK_bq_Question_bq_QuestionGroup" FromRole="bq_QuestionGroup" ToRole="bq_Question" />
           <NavigationProperty Name="bq_Quiz" Relationship="BluequizModel.FK_bq_QuestionGroup_bq_Quiz" FromRole="bq_QuestionGroup" ToRole="bq_Quiz" />
+          <Property Type="Boolean" Name="IsDone" Nullable="false" />
         </EntityType>
         <EntityType Name="bq_Quiz">
           <Key>
             <PropertyRef Name="QuizId" />
           </Key>
-          <Property Name="QuizId" Type="Guid" Nullable="false" />
-          <Property Name="UserId" Type="Guid" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
-          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="FinanceCompany" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="CompanyIcon" Type="String" MaxLength="60" Unicode="false" FixedLength="false" />
-          <NavigationProperty Name="bq_Part" Relationship="BluequizModel.FK_bq_Part_bq_Quiz" FromRole="bq_Quiz" ToRole="bq_Part" />
+          <Property Type="Guid" Name="QuizId" Nullable="false" />
+          <Property Type="Guid" Name="UserId" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="DateCreated" Nullable="false" Precision="0" />
+          <Property Type="String" Name="FinanceCompany" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CompanyIcon" MaxLength="60" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="bq_Question" Relationship="BluequizModel.FK_bq_Question_bq_Quiz" FromRole="bq_Quiz" ToRole="bq_Question" />
           <NavigationProperty Name="bq_QuestionGroup" Relationship="BluequizModel.FK_bq_QuestionGroup_bq_Quiz" FromRole="bq_Quiz" ToRole="bq_QuestionGroup" />
           <NavigationProperty Name="bq_Test" Relationship="BluequizModel.FK_bq_Test_bq_Quiz" FromRole="bq_Quiz" ToRole="bq_Test" />
@@ -460,13 +525,13 @@
           <Key>
             <PropertyRef Name="TestId" />
           </Key>
-          <Property Name="TestId" Type="Guid" Nullable="false" />
-          <Property Name="UserId" Type="Guid" />
-          <Property Name="QuizId" Type="Guid" Nullable="false" />
-          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="StartTime" Type="DateTime" Precision="0" />
-          <Property Name="EndTime" Type="DateTime" Precision="0" />
-          <Property Name="Mark" Type="Int32" />
+          <Property Type="Guid" Name="TestId" Nullable="false" />
+          <Property Type="Guid" Name="UserId" />
+          <Property Type="Guid" Name="QuizId" Nullable="false" />
+          <Property Type="DateTime" Name="DateCreated" Nullable="false" Precision="0" />
+          <Property Type="DateTime" Name="StartTime" Precision="0" />
+          <Property Type="DateTime" Name="EndTime" Precision="0" />
+          <Property Type="Int32" Name="Mark" />
           <NavigationProperty Name="bq_Quiz" Relationship="BluequizModel.FK_bq_Test_bq_Quiz" FromRole="bq_Test" ToRole="bq_Quiz" />
           <NavigationProperty Name="qb_Answer" Relationship="BluequizModel.FK_qb_Answer_bq_Test" FromRole="bq_Test" ToRole="qb_Answer" />
         </EntityType>
@@ -474,29 +539,29 @@
           <Key>
             <PropertyRef Name="AnswerId" />
           </Key>
-          <Property Name="AnswerId" Type="Guid" Nullable="false" />
-          <Property Name="TestId" Type="Guid" Nullable="false" />
-          <Property Name="QuestionId" Type="Guid" Nullable="false" />
-          <Property Name="OrderQuestion" Type="Byte" Nullable="false" />
-          <Property Name="Answer" Type="Byte" Nullable="false" />
+          <Property Type="Guid" Name="AnswerId" Nullable="false" />
+          <Property Type="Guid" Name="TestId" Nullable="false" />
+          <Property Type="Guid" Name="QuestionId" Nullable="false" />
+          <Property Type="Byte" Name="OrderQuestion" Nullable="false" />
+          <Property Type="Byte" Name="Answer" Nullable="false" />
           <NavigationProperty Name="bq_Question" Relationship="BluequizModel.FK_qb_Answer_bq_Question" FromRole="qb_Answer" ToRole="bq_Question" />
           <NavigationProperty Name="bq_Test" Relationship="BluequizModel.FK_qb_Answer_bq_Test" FromRole="qb_Answer" ToRole="bq_Test" />
         </EntityType>
-        <Association Name="FK_bq_Part_bq_Quiz">
-          <End Role="bq_Quiz" Type="BluequizModel.bq_Quiz" Multiplicity="1" />
-          <End Role="bq_Part" Type="BluequizModel.bq_Part" Multiplicity="*" />
+        <Association Name="FK_bq_Part_bq_Part">
+          <End Type="BluequizModel.bq_Part" Role="bq_Part" Multiplicity="0..1" />
+          <End Type="BluequizModel.bq_Part" Role="bq_Part1" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="bq_Quiz">
-              <PropertyRef Name="QuizId" />
+            <Principal Role="bq_Part">
+              <PropertyRef Name="PartId" />
             </Principal>
-            <Dependent Role="bq_Part">
-              <PropertyRef Name="QuizId" />
+            <Dependent Role="bq_Part1">
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_bq_QuestionGroup_bq_Part">
-          <End Role="bq_Part" Type="BluequizModel.bq_Part" Multiplicity="1" />
-          <End Role="bq_QuestionGroup" Type="BluequizModel.bq_QuestionGroup" Multiplicity="*" />
+          <End Type="BluequizModel.bq_Part" Role="bq_Part" Multiplicity="1" />
+          <End Type="BluequizModel.bq_QuestionGroup" Role="bq_QuestionGroup" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="bq_Part">
               <PropertyRef Name="PartId" />
@@ -507,8 +572,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_bq_Question_bq_QuestionGroup">
-          <End Role="bq_QuestionGroup" Type="BluequizModel.bq_QuestionGroup" Multiplicity="1" />
-          <End Role="bq_Question" Type="BluequizModel.bq_Question" Multiplicity="*" />
+          <End Type="BluequizModel.bq_QuestionGroup" Role="bq_QuestionGroup" Multiplicity="1" />
+          <End Type="BluequizModel.bq_Question" Role="bq_Question" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="bq_QuestionGroup">
               <PropertyRef Name="QuestionGroupId" />
@@ -519,8 +584,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_bq_Question_bq_Quiz">
-          <End Role="bq_Quiz" Type="BluequizModel.bq_Quiz" Multiplicity="1" />
-          <End Role="bq_Question" Type="BluequizModel.bq_Question" Multiplicity="*" />
+          <End Type="BluequizModel.bq_Quiz" Role="bq_Quiz" Multiplicity="1" />
+          <End Type="BluequizModel.bq_Question" Role="bq_Question" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="bq_Quiz">
               <PropertyRef Name="QuizId" />
@@ -531,8 +596,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_qb_Answer_bq_Question">
-          <End Role="bq_Question" Type="BluequizModel.bq_Question" Multiplicity="1" />
-          <End Role="qb_Answer" Type="BluequizModel.qb_Answer" Multiplicity="*" />
+          <End Type="BluequizModel.bq_Question" Role="bq_Question" Multiplicity="1" />
+          <End Type="BluequizModel.qb_Answer" Role="qb_Answer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="bq_Question">
               <PropertyRef Name="QuestionId" />
@@ -543,8 +608,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_bq_QuestionGroup_bq_Quiz">
-          <End Role="bq_Quiz" Type="BluequizModel.bq_Quiz" Multiplicity="1" />
-          <End Role="bq_QuestionGroup" Type="BluequizModel.bq_QuestionGroup" Multiplicity="*" />
+          <End Type="BluequizModel.bq_Quiz" Role="bq_Quiz" Multiplicity="1" />
+          <End Type="BluequizModel.bq_QuestionGroup" Role="bq_QuestionGroup" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="bq_Quiz">
               <PropertyRef Name="QuizId" />
@@ -555,8 +620,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_bq_Test_bq_Quiz">
-          <End Role="bq_Quiz" Type="BluequizModel.bq_Quiz" Multiplicity="1" />
-          <End Role="bq_Test" Type="BluequizModel.bq_Test" Multiplicity="*" />
+          <End Type="BluequizModel.bq_Quiz" Role="bq_Quiz" Multiplicity="1" />
+          <End Type="BluequizModel.bq_Test" Role="bq_Test" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="bq_Quiz">
               <PropertyRef Name="QuizId" />
@@ -567,8 +632,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_qb_Answer_bq_Test">
-          <End Role="bq_Test" Type="BluequizModel.bq_Test" Multiplicity="1" />
-          <End Role="qb_Answer" Type="BluequizModel.qb_Answer" Multiplicity="*" />
+          <End Type="BluequizModel.bq_Test" Role="bq_Test" Multiplicity="1" />
+          <End Type="BluequizModel.qb_Answer" Role="qb_Answer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="bq_Test">
               <PropertyRef Name="TestId" />
@@ -578,11 +643,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <ComplexType Name="bq_Part_GetByQuizId_Result">
-          <Property Type="Guid" Name="PartId" Nullable="false" />
-          <Property Type="Guid" Name="QuizId" Nullable="false" />
+        <ComplexType Name="bq_Part_GetByParentId_Result">
+          <Property Type="Byte" Name="PartId" Nullable="false" />
+          <Property Type="Byte" Name="ParentId" Nullable="true" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="50" />
-          <Property Type="Byte" Name="Order" Nullable="false" />
+          <Property Type="Byte" Name="Order" Nullable="true" />
+          <Property Type="Byte" Name="NumberOfItems" Nullable="false" />
         </ComplexType>
         <ComplexType Name="bq_Question_GetByQuestionGroupId_Result">
           <Property Type="Guid" Name="QuestionId" Nullable="false" />
@@ -612,14 +678,61 @@
           <Property Type="String" Name="OptionD" Nullable="true" MaxLength="50" />
           <Property Type="Byte" Name="Answer" Nullable="false" />
         </ComplexType>
-        <ComplexType Name="bq_QuestionGroup_GetByPart_Result">
+        <ComplexType Name="bq_QuestionGroup_GetByQuiz_Result">
           <Property Type="Guid" Name="QuestionGroupId" Nullable="false" />
           <Property Type="Guid" Name="QuizId" Nullable="false" />
-          <Property Type="Guid" Name="PartId" Nullable="false" />
+          <Property Type="Byte" Name="PartId" Nullable="false" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="50" />
           <Property Type="Byte" Name="Order" Nullable="false" />
           <Property Type="String" Name="Paragraph" Nullable="true" MaxLength="Max" />
           <Property Type="String" Name="MediaPath" Nullable="true" MaxLength="60" />
+        </ComplexType>
+        <ComplexType Name="bq_Part_GetById_Result">
+          <Property Type="Byte" Name="PartId" Nullable="false" />
+          <Property Type="Byte" Name="ParentId" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" />
+          <Property Type="Byte" Name="Order" Nullable="true" />
+          <Property Type="Byte" Name="NumberOfItems" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="bq_Question_GetById_Result">
+          <Property Type="Guid" Name="QuestionId" Nullable="false" />
+          <Property Type="Guid" Name="QuestionGroupId" Nullable="false" />
+          <Property Type="Guid" Name="QuizId" Nullable="false" />
+          <Property Type="Byte" Name="Order" Nullable="false" />
+          <Property Type="String" Name="ImagePath" Nullable="true" MaxLength="60" />
+          <Property Type="String" Name="MediaPath" Nullable="true" MaxLength="60" />
+          <Property Type="String" Name="Paragraph" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="OptionA" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OptionB" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OptionC" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OptionD" Nullable="true" MaxLength="50" />
+          <Property Type="Byte" Name="Answer" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="bq_QuestionGroup_GetById_Result">
+          <Property Type="Guid" Name="QuestionGroupId" Nullable="false" />
+          <Property Type="Guid" Name="QuizId" Nullable="false" />
+          <Property Type="Byte" Name="PartId" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" />
+          <Property Type="Byte" Name="Order" Nullable="false" />
+          <Property Type="String" Name="Paragraph" Nullable="true" MaxLength="Max" />
+          <Property Type="String" Name="MediaPath" Nullable="true" MaxLength="60" />
+        </ComplexType>
+        <ComplexType Name="bq_Quiz_GetById_Result">
+          <Property Type="Guid" Name="QuizId" Nullable="false" />
+          <Property Type="Guid" Name="UserId" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="100" />
+          <Property Type="DateTime" Name="DateCreated" Nullable="false" Precision="16" />
+          <Property Type="String" Name="FinanceCompany" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="CompanyIcon" Nullable="true" MaxLength="60" />
+        </ComplexType>
+        <ComplexType Name="bq_Part_GetAllChilds_Result">
+          <Property Type="Byte" Name="PartId" Nullable="false" />
+          <Property Type="Byte" Name="ParentId" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" />
+          <Property Type="Byte" Name="Order" Nullable="true" />
+          <Property Type="Byte" Name="NumberOfItems" Nullable="false" />
+          <Property Type="String" Name="EdittingUrl" Nullable="true" MaxLength="60" />
+          <Property Type="String" Name="PublishingUrl" Nullable="true" MaxLength="60" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -630,95 +743,113 @@
           <EntitySetMapping Name="bq_Part">
             <EntityTypeMapping TypeName="BluequizModel.bq_Part">
               <MappingFragment StoreEntitySet="bq_Part">
-                <ScalarProperty Name="PartId" ColumnName="PartId" />
-                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PublishingUrl" ColumnName="PublishingUrl" />
+                <ScalarProperty Name="EdittingUrl" ColumnName="EdittingUrl" />
+                <ScalarProperty Name="NumberOfItems" ColumnName="NumberOfItems" />
                 <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="PartId" ColumnName="PartId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="bq_Question">
             <EntityTypeMapping TypeName="BluequizModel.bq_Question">
               <MappingFragment StoreEntitySet="bq_Question">
-                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
-                <ScalarProperty Name="QuestionGroupId" ColumnName="QuestionGroupId" />
-                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
-                <ScalarProperty Name="Order" ColumnName="Order" />
-                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
-                <ScalarProperty Name="MediaPath" ColumnName="MediaPath" />
-                <ScalarProperty Name="Paragraph" ColumnName="Paragraph" />
-                <ScalarProperty Name="OptionA" ColumnName="OptionA" />
-                <ScalarProperty Name="OptionB" ColumnName="OptionB" />
-                <ScalarProperty Name="OptionC" ColumnName="OptionC" />
-                <ScalarProperty Name="OptionD" ColumnName="OptionD" />
+                <ScalarProperty Name="IsDone" ColumnName="IsDone" />
                 <ScalarProperty Name="Answer" ColumnName="Answer" />
+                <ScalarProperty Name="OptionD" ColumnName="OptionD" />
+                <ScalarProperty Name="OptionC" ColumnName="OptionC" />
+                <ScalarProperty Name="OptionB" ColumnName="OptionB" />
+                <ScalarProperty Name="OptionA" ColumnName="OptionA" />
+                <ScalarProperty Name="Paragraph" ColumnName="Paragraph" />
+                <ScalarProperty Name="MediaPath" ColumnName="MediaPath" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
+                <ScalarProperty Name="QuestionGroupId" ColumnName="QuestionGroupId" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="bq_QuestionGroup">
             <EntityTypeMapping TypeName="BluequizModel.bq_QuestionGroup">
               <MappingFragment StoreEntitySet="bq_QuestionGroup">
-                <ScalarProperty Name="QuestionGroupId" ColumnName="QuestionGroupId" />
-                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
-                <ScalarProperty Name="PartId" ColumnName="PartId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Order" ColumnName="Order" />
-                <ScalarProperty Name="Paragraph" ColumnName="Paragraph" />
+                <ScalarProperty Name="IsDone" ColumnName="IsDone" />
                 <ScalarProperty Name="MediaPath" ColumnName="MediaPath" />
+                <ScalarProperty Name="Paragraph" ColumnName="Paragraph" />
+                <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PartId" ColumnName="PartId" />
+                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
+                <ScalarProperty Name="QuestionGroupId" ColumnName="QuestionGroupId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="bq_Quiz">
             <EntityTypeMapping TypeName="BluequizModel.bq_Quiz">
               <MappingFragment StoreEntitySet="bq_Quiz">
-                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
-                <ScalarProperty Name="FinanceCompany" ColumnName="FinanceCompany" />
                 <ScalarProperty Name="CompanyIcon" ColumnName="CompanyIcon" />
+                <ScalarProperty Name="FinanceCompany" ColumnName="FinanceCompany" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="bq_Test">
             <EntityTypeMapping TypeName="BluequizModel.bq_Test">
               <MappingFragment StoreEntitySet="bq_Test">
-                <ScalarProperty Name="TestId" ColumnName="TestId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
-                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
                 <ScalarProperty Name="Mark" ColumnName="Mark" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="QuizId" ColumnName="QuizId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TestId" ColumnName="TestId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="qb_Answer">
             <EntityTypeMapping TypeName="BluequizModel.qb_Answer">
               <MappingFragment StoreEntitySet="qb_Answer">
-                <ScalarProperty Name="AnswerId" ColumnName="AnswerId" />
-                <ScalarProperty Name="TestId" ColumnName="TestId" />
-                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
-                <ScalarProperty Name="OrderQuestion" ColumnName="OrderQuestion" />
                 <ScalarProperty Name="Answer" ColumnName="Answer" />
+                <ScalarProperty Name="OrderQuestion" ColumnName="OrderQuestion" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+                <ScalarProperty Name="TestId" ColumnName="TestId" />
+                <ScalarProperty Name="AnswerId" ColumnName="AnswerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="bq_Part_Add" FunctionName="BluequizModel.Store.bq_Part_Add" />
-          <FunctionImportMapping FunctionImportName="bq_Part_GetByQuizId" FunctionName="BluequizModel.Store.bq_Part_GetByQuizId">
+          <FunctionImportMapping FunctionImportName="bq_Part_GetByParentId" FunctionName="BluequizModel.Store.bq_Part_GetByParentId">
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="bq_Part_Update" FunctionName="BluequizModel.Store.bq_Part_Update" />
           <FunctionImportMapping FunctionImportName="bq_Question_Add" FunctionName="BluequizModel.Store.bq_Question_Add" />
           <FunctionImportMapping FunctionImportName="bq_Question_GetByQuestionGroupId" FunctionName="BluequizModel.Store.bq_Question_GetByQuestionGroupId">
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="bq_Question_GetByQuizId" FunctionName="BluequizModel.Store.bq_Question_GetByQuizId">
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="bq_Question_Update" FunctionName="BluequizModel.Store.bq_Question_Update" />
+          <FunctionImportMapping FunctionImportName="bq_Question_UpdateImagePath" FunctionName="BluequizModel.Store.bq_Question_UpdateImagePath" />
+          <FunctionImportMapping FunctionImportName="bq_Question_UpdateMediaPath" FunctionName="BluequizModel.Store.bq_Question_UpdateMediaPath" />
           <FunctionImportMapping FunctionImportName="bq_QuestionGroup_Add" FunctionName="BluequizModel.Store.bq_QuestionGroup_Add" />
-          <FunctionImportMapping FunctionImportName="bq_QuestionGroup_GetByPart" FunctionName="BluequizModel.Store.bq_QuestionGroup_GetByPart">
+          <FunctionImportMapping FunctionImportName="bq_QuestionGroup_GetByQuiz" FunctionName="BluequizModel.Store.bq_QuestionGroup_GetByQuiz">
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="bq_QuestionGroup_Update" FunctionName="BluequizModel.Store.bq_QuestionGroup_Update" />
           <FunctionImportMapping FunctionImportName="bq_QuestionGroup_UpdateMediaPath" FunctionName="BluequizModel.Store.bq_QuestionGroup_UpdateMediaPath" />
+          <FunctionImportMapping FunctionImportName="bq_Quiz_Add" FunctionName="BluequizModel.Store.bq_Quiz_Add" />
+          <FunctionImportMapping FunctionImportName="bq_Quiz_Update" FunctionName="BluequizModel.Store.bq_Quiz_Update" />
+          <FunctionImportMapping FunctionImportName="bq_Quiz_UpdateCompanyIcon" FunctionName="BluequizModel.Store.bq_Quiz_UpdateCompanyIcon" />
+          <FunctionImportMapping FunctionImportName="bq_Part_GetById" FunctionName="BluequizModel.Store.bq_Part_GetById">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="bq_Question_GetById" FunctionName="BluequizModel.Store.bq_Question_GetById">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="bq_QuestionGroup_GetById" FunctionName="BluequizModel.Store.bq_QuestionGroup_GetById">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="bq_Quiz_GetById" FunctionName="BluequizModel.Store.bq_Quiz_GetById">
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="bq_Part_GetAllChilds" FunctionName="BluequizModel.Store.bq_Part_GetAllChilds">
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
