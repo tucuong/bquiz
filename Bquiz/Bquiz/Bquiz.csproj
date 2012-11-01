@@ -718,6 +718,7 @@
     <Content Include="Views\Bq_TuCuong\UpdatePart8.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Part\EdittingMenu.cshtml" />
+    <Content Include="Views\Bq_Hau\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Audio\" />
