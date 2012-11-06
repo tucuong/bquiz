@@ -33,7 +33,7 @@ namespace Bquiz.Controllers
                 db.bq_QuestionGroup_Add(
                     questionGroupId,
                     quizId,
-                    8, //Thay đổi đối với từng part
+                    8, //Thay đổi đối với từng part (thứ tự part)
                     String.Format("Part8.{0}", i + 1),
                     i,
                     null, null);
@@ -43,7 +43,7 @@ namespace Bquiz.Controllers
                 {
                     db.bq_Question_Add(
                         Guid.NewGuid(),
-                        questionGroupId,
+                        questionGroupId, //phải trả về đúng với group id phía trên
                         quizId,
                         ord,
                         null, null, null, null, null, null, null, 0);
